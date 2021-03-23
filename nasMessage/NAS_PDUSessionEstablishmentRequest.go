@@ -1,10 +1,10 @@
 package nasMessage
 
 import (
-	"github.com/free5gc/nas/logger"
-	"github.com/free5gc/nas/nasType"
 	"bytes"
 	"encoding/binary"
+
+	"github.com/free5gc/nas/nasType"
 )
 
 type PDUSessionEstablishmentRequest struct {
@@ -67,7 +67,6 @@ func (a *PDUSessionEstablishmentRequest) EncodePDUSessionEstablishmentRequest(bu
 		binary.Write(buffer, binary.BigEndian, &a.SMPDUDNRequestContainer.Buffer)
 	}
 	if a.ExtendedProtocolConfigurationOptions != nil {
-		logger.NasMsgLog.Infoln("Encode ExtendedProtocolConfigurationOptions in EncodePDUSessionEstablishmentRequest")
 		binary.Write(buffer, binary.BigEndian, a.ExtendedProtocolConfigurationOptions.GetIei())
 		binary.Write(buffer, binary.BigEndian, a.ExtendedProtocolConfigurationOptions.GetLen())
 		binary.Write(buffer, binary.BigEndian, &a.ExtendedProtocolConfigurationOptions.Buffer)

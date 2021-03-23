@@ -1,10 +1,11 @@
 package nasConvert
 
 import (
-	"github.com/free5gc/nas/logger"
-	"github.com/free5gc/openapi/models"
 	"encoding/hex"
 	"reflect"
+
+	"github.com/free5gc/nas/logger"
+	"github.com/free5gc/openapi/models"
 )
 
 // TS 24.501 9.11.3.9
@@ -25,7 +26,7 @@ func TaiListToNas(taiList []models.Tai) []uint8 {
 
 	switch typeOfList {
 	case 0x00:
-		plmnNas := PlmnIDToNas(*plmnId)
+		plmnNas, _ := PlmnIDToNas(*plmnId)
 		taiListNas = append(taiListNas, plmnNas...)
 
 		for _, tai := range taiList {
@@ -37,7 +38,7 @@ func TaiListToNas(taiList []models.Tai) []uint8 {
 		}
 	case 0x02:
 		for _, tai := range taiList {
-			plmnNas := PlmnIDToNas(*tai.PlmnId)
+			plmnNas, _ := PlmnIDToNas(*tai.PlmnId)
 			if tacBytes, err := hex.DecodeString(tai.Tac); err != nil {
 				logger.ConvertLog.Warnf("Decode tac failed: %+v", err)
 			} else {

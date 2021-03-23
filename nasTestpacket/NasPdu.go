@@ -99,7 +99,7 @@ func GetPduSessionEstablishmentRequest(pduSessionId uint8) []byte {
 	protocolConfigurationOptions.AddIPAddressAllocationViaNASSignallingUL()
 	protocolConfigurationOptions.AddDNSServerIPv4AddressRequest()
 	protocolConfigurationOptions.AddDNSServerIPv6AddressRequest()
-	pcoContents := protocolConfigurationOptions.Marshal()
+	pcoContents, _ := protocolConfigurationOptions.Marshal()
 	pcoContentsLength := len(pcoContents)
 	pduSessionEstablishmentRequest.ExtendedProtocolConfigurationOptions.SetLen(uint16(pcoContentsLength))
 	pduSessionEstablishmentRequest.ExtendedProtocolConfigurationOptions.

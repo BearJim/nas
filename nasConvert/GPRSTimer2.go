@@ -1,19 +1,17 @@
 package nasConvert
 
 import (
-	"github.com/free5gc/nas/logger"
+	"errors"
 )
 
 // TS 24.008 10.5.7.4, TS 24.501 9.11.2.4
 // the unit of timerValue is second
-func GPRSTimer2ToNas(timerValue int) (timerValueNas uint8) {
-
-	timerValueNas = 0
+func GPRSTimer2ToNas(timerValue int) (uint8, error) {
+	timerValueNas := uint8(0)
 
 	if timerValue <= 64 {
 		if timerValue%2 != 0 {
-			logger.ConvertLog.Error("timer Value is not multiples of 2 seconds")
-			return
+			return 0, errors.New("timer Value is not multiples of 2 seconds")
 		}
 		timerValueNas = uint8(timerValue / 2)
 	} else {
@@ -22,13 +20,11 @@ func GPRSTimer2ToNas(timerValue int) (timerValueNas uint8) {
 			timerValueNas = (timerValueNas | 0x20) + t
 		} else {
 			if t%6 != 0 {
-				logger.ConvertLog.Error("timer Value is not multiples of decihours")
-				return
+				return 0, errors.New("timer Value is not multiples of decihours")
 			}
 			t = t / 6
 			timerValueNas = (timerValueNas | 0x40) + t
 		}
 	}
-
-	return
+	return timerValueNas, nil
 }

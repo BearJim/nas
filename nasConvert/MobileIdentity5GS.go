@@ -1,15 +1,15 @@
 package nasConvert
 
 import (
-	"github.com/free5gc/nas/logger"
-	"github.com/free5gc/nas/nasMessage"
-	"github.com/free5gc/nas/nasType"
-	"github.com/free5gc/openapi/models"
 	"encoding/hex"
 	"fmt"
 	"math/bits"
 	"strconv"
 	"strings"
+
+	"github.com/free5gc/nas/nasMessage"
+	"github.com/free5gc/nas/nasType"
+	"github.com/free5gc/openapi/models"
 )
 
 func GetTypeOfIdentity(buf byte) uint8 {
@@ -107,7 +107,7 @@ func GutiToString(buf []byte) (guami models.Guami, guti string) {
 	return
 }
 
-func GutiToNas(guti string) nasType.GUTI5G {
+func GutiToNas(guti string) (*nasType.GUTI5G, error) {
 	var gutiNas nasType.GUTI5G
 
 	gutiNas.SetLen(11)
@@ -117,27 +117,27 @@ func GutiToNas(guti string) nasType.GUTI5G {
 
 	var mcc1, mcc2, mcc3, mnc1, mnc2, mnc3 int
 	if mcc1Tmp, err := strconv.Atoi(string(guti[0])); err != nil {
-		logger.ConvertLog.Warnf("atoi mcc1 error: %+v", err)
+		return nil, fmt.Errorf("atoi mcc1 error: %+v", err)
 	} else {
 		mcc1 = mcc1Tmp
 	}
 	if mcc2Tmp, err := strconv.Atoi(string(guti[1])); err != nil {
-		logger.ConvertLog.Warnf("atoi mcc2 error: %+v", err)
+		return nil, fmt.Errorf("atoi mcc2 error: %+v", err)
 	} else {
 		mcc2 = mcc2Tmp
 	}
 	if mcc3Tmp, err := strconv.Atoi(string(guti[2])); err != nil {
-		logger.ConvertLog.Warnf("atoi mcc3 error: %+v", err)
+		return nil, fmt.Errorf("atoi mcc3 error: %+v", err)
 	} else {
 		mcc3 = mcc3Tmp
 	}
 	if mnc1Tmp, err := strconv.Atoi(string(guti[3])); err != nil {
-		logger.ConvertLog.Warnf("atoi mnc1 error: %+v", err)
+		return nil, fmt.Errorf("atoi mnc1 error: %+v", err)
 	} else {
 		mnc1 = mnc1Tmp
 	}
 	if mnc2Tmp, err := strconv.Atoi(string(guti[4])); err != nil {
-		logger.ConvertLog.Warnf("atoi mnc2 error: %+v", err)
+		return nil, fmt.Errorf("atoi mnc2 error: %+v", err)
 	} else {
 		mnc2 = mnc2Tmp
 	}
@@ -146,7 +146,7 @@ func GutiToNas(guti string) nasType.GUTI5G {
 	tmsi := ""
 	if len(guti) == 20 {
 		if mnc3Tmp, err := strconv.Atoi(string(guti[5])); err != nil {
-			logger.ConvertLog.Warnf("atoi guti error: %+v", err)
+			return nil, fmt.Errorf("atoi guti error: %+v", err)
 		} else {
 			mnc3 = mnc3Tmp
 		}
@@ -168,11 +168,11 @@ func GutiToNas(guti string) nasType.GUTI5G {
 	gutiNas.SetAMFSetID(amfSetId)
 	gutiNas.SetAMFPointer(amfPointer)
 	if tmsiBytes, err := hex.DecodeString(tmsi); err != nil {
-		logger.ConvertLog.Warnf("Decode TMSI failed: %+v", err)
+		return nil, fmt.Errorf("Decode TMSI failed: %+v", err)
 	} else {
 		copy(gutiNas.Octet[7:11], tmsiBytes[:])
 	}
-	return gutiNas
+	return &gutiNas, nil
 }
 
 // PEI: ^(imei-[0-9]{15}|imeisv-[0-9]{16}|.+)$
