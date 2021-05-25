@@ -69,6 +69,7 @@ const (
 	Cause5GMMTrackingAreaNotAllowed                         uint8 = 0x0c
 	Cause5GMMRoamingNotAllowedInThisTrackingArea            uint8 = 0x0d
 	Cause5GMMNoSuitableCellsInTrackingArea                  uint8 = 0x0f
+	Cause5GMMRestartRegistration                            uint8 = 0x13
 	Cause5GMMMACFailure                                     uint8 = 0x14
 	Cause5GMMSynchFailure                                   uint8 = 0x15
 	Cause5GMMCongestion                                     uint8 = 0x16
